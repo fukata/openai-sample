@@ -6,17 +6,10 @@ require('dotenv').config();
  */
 const gMessages = [];
 
-/**
- * あなたの名前
- * @type {string}
- */
-let gName = '';
-
-function addMessage(role, name, content) {
+function addMessage(role, content) {
     gMessages.push(
         {
             role: role,
-            name: name,
             content: content,
         }
     );
@@ -34,7 +27,7 @@ async function sendMessage(openai, message) {
 function receiveMessage(data) {
     // console.log(data.choices);
     const message = data.choices[0].message;
-    addMessage(message.role, 'AI', message.content);
+    addMessage(message.role, message.content);
     console.log(`AI: ${message.content}`)
 }
 
@@ -59,17 +52,11 @@ async function main() {
     });
     const openai = new OpenAIApi(configuration);
 
-    gName = await inputMessage('あなたの名前を教えてください：');
-    if (gName.length === 0) {
-        console.error('名前を入力してください。');
-        process.exit(1);
-    }
-
     while(true) {
-        const message = await inputMessage(`${gName}: `);
+        const message = await inputMessage(`あなた: `);
         // console.log(message);
         if (message.length > 0) {
-            addMessage('user', gName, message);
+            addMessage('user', message);
             const data = await sendMessage(openai, message);
             receiveMessage(data);
         }
