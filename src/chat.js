@@ -17,7 +17,7 @@ function addMessage(role, content) {
 
 async function sendMessage(openai, message) {
     const response = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+        model: process.env.OPENAI_MODEL || 'gpt-3.5-turbo',
         messages: gMessages,
     });
 
