@@ -45,9 +45,9 @@ async function sendMessageStream(openai, message, onCallback) {
 
     for await (const chunk of response.data) {
         const lines = chunk
-          .toString("utf8")
-          .split("\n")
-          .filter((line) => line.trim().startsWith("data: "));
+            .toString("utf8")
+            .split("\n")
+            .filter((line) => line.trim().startsWith("data: "));
 
         for (const line of lines) {
             const message = line.replace(/^data: /, "");
@@ -85,8 +85,8 @@ function receiveMessageStream(data, fullContent) {
     // console.log(data);
     process.stdout.write(data.content);
     if (data.finish) {
-      addMessage(data.role, fullContent);
-      console.log('');
+        addMessage(data.role, fullContent);
+        console.log('');
     }
 }
 
@@ -96,7 +96,7 @@ function inputMessage(question) {
         output: process.stdout
     });
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _) => {
         readline.question(question, (answer) => {
             resolve(answer);
             readline.close();
@@ -114,10 +114,10 @@ async function processMessage(openai, message) {
 
     if (process.env.OPENAI_STREAM === '1') {
         process.stdout.write(`AI: `);
-        let fullContent = ''; 
+        let fullContent = '';
         const onCallback = function(data) {
-          fullContent += data.content;
-          receiveMessageStream(data, fullContent);
+            fullContent += data.content;
+            receiveMessageStream(data, fullContent);
         };
         await sendMessageStream(openai, message, onCallback);
     } else {
@@ -128,7 +128,7 @@ async function processMessage(openai, message) {
 
 async function main() {
     if (process.env.DEBUG === '1') {
-      console.log(`== DEBUG ==
+        console.log(`== DEBUG ==
 OPENAI_MODEL=${process.env.OPENAI_MODEL}
 OPENAI_STREAM=${process.env.OPENAI_STREAM}
 `);
@@ -140,7 +140,7 @@ OPENAI_STREAM=${process.env.OPENAI_STREAM}
     });
     const openai = new OpenAIApi(configuration);
 
-    while(true) {
+    while (true) {
         const message = await inputMessage(`あなた: `);
         await processMessage(openai, message);
     }
